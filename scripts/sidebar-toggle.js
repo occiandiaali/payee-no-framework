@@ -1,10 +1,13 @@
 const cartPlaceholder = document.getElementById('empty-cart');
 const cart = document.getElementById('full-cart');
+let cartStr = "";
+let str = localStorage.getItem('cart-items');
+cartStr = str;
+//const cartItems = JSON.parse(cartStr);
 
-const cartItems = [1];
 function w3_open() {
     document.getElementById("mySidebar").style.display = "block";
-    if (cartItems.length < 1) {
+    if (str === null) {
         cart.style.display = 'none';
     } else {
         cartPlaceholder.style.display = 'none';

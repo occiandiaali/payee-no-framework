@@ -3,6 +3,13 @@ let htmlScanner = new Html5QrcodeScanner(
     { fps: 10, qrbox: 250 }
 );
 
+let globalName = ""
+let globalPrice = ""
+let globalQty = ""
+// const nameItemEl = document.getElementById('item-name');
+// const priceItemEl = document.getElementById('item-price');
+// const itemTotalEl = document.getElementById('item-total');
+const cartList = document.querySelector('#cart-list');
 
 function decodeExtractor(input) {
     const n = input.indexOf("Name");
@@ -16,7 +23,8 @@ function decodeExtractor(input) {
 }
 
 function previewModal(name, info, price) {
-
+    globalName = name;
+    globalPrice = price;
     const previewHtml = `
     <section style="height: 480px; border-radius: 16px;">
     <img src=${'../assets/images/lite-logo.jpg'} alt="item image" style="width: 100%; height: 150px;">
@@ -38,28 +46,14 @@ function previewModal(name, info, price) {
 </div>
 <!--<div class="w3-margin" style="display: flex; flex-direction: row; justify-content: space-between; padding: 6px;"> -->
 <button class="w3-btn w3-round-xxlarge w3-yellow" onclick="cancelPreview()">Cancel</button>
-<button class="w3-btn w3-round-xxlarge w3-teal">Add to cart</button>
+<button class="w3-btn w3-round-xxlarge w3-teal" onclick="addToCart()">Add to cart</button>
 <!-- </div> -->
 </section>
     `;
     document.getElementById('preview').innerHTML += previewHtml;
-    // return modalDiv;
+
 }
 
-/* 
-<p>Qty</p>
-    <div id="increment-count">
-     <!-- <input type="image" id="up-arrow" src="up_arrow.png" /> -->
-     <span style="font-size: 32px; font-weight: 900;">&#8593</span>
-    </div>
-    <div id="total-count">
-    <span style="font-weight: 800;">${1}</span>
-    </div>
-    <div id="decrement-count">
-     <!-- <input type="image" id="down-arrow" src="down_arrow.png" /> -->
-     <span style="font-size: 32px; font-weight: 900;">&#x2193</span>
-    </div>
-*/
 
 function domReady(fn) {
     if (
@@ -72,12 +66,81 @@ function domReady(fn) {
     }
 }
 
-
-//let scanned = false;
 function cancelPreview() {
     document.getElementById('id01').style.display = 'none';
     window.location.reload();
 }
+
+function createCartList(cItem) {
+    let li = document.createElement('li');
+    li.classList.add('w3-bar');
+
+    //     const tile = `
+    //     <div class="w3-border"
+    //     style="display: flex; flex-direction: row; justify-content: space-around; padding: 6px; height: 76px; width: 100%;">
+    //     <img src="./assets/images/lite-logo.jpg" alt="item thumbnail" class="w3-round w3-border w3-cell"
+    //         style="width: 60px; height: 64px;">
+    //     <div style="display: flex; flex-direction: column; padding: 4px;">
+    //         <span id="item-name">${cItem.itemName}</span>
+    //         <span id="item-price">${cItem.itemPrice}</span>
+    //     </div>
+    //     <div style="display: flex; flex-direction: column; padding: 4px;">
+    //         <span style="font-weight: bold;">Total</span>
+    //         <span style="font-weight: bold;" id="item-total">${cItem.itemSum}</span>
+    //     </div>
+
+    //     <button class="w3-button" id="delete-item">&#x1F5D1;</button>
+    // </div>
+    //     `;
+    //  li.textContent = tile;
+
+    li.textContent = `
+     <span onclick="this.parentElement.style.display='none'" class="w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
+     <img src="./assets/images/lite-logo.jpg" alt="item thumbnail" class="w3-bar-item w3-circle w3-hide-small" style="width:85px">
+     <div class="w3-bar-item">
+       <span class="w3-large">${cItem.itemName}</span><br>
+       <span>${cItem.itemPrice}</span>
+     </div>
+     <div class="w3-bar-item">
+     <span>${cItem.itemSum}</span>
+     </div>
+     `;
+
+    return li;
+}
+
+function addToCart() {
+    let selectEl = document.querySelector('#item-qty');
+    globalQty = selectEl.options[selectEl.selectedIndex].value;
+    let itemsArr = [];
+    itemsArrFromStorage = localStorage.getItem('cart-items');
+    const cartItem = {
+        itemName: globalName.trim(),
+        itemPrice: globalPrice.trim(),
+        // itemQty: qty,
+        itemSum: (+globalPrice * +globalQty)
+    };
+    // cartList.appendChild(createCartList(cartItem));
+
+    if (itemsArrFromStorage === null) {
+        itemsArr.push(cartItem);
+        localStorage.setItem('cart-items', JSON.stringify(itemsArr))
+    } else {
+        let retrievedArrString = localStorage.getItem('cart-items')
+        let retrievedArr = JSON.parse(retrievedArrString);
+        const mergedRes = [...retrievedArr, cartItem];
+        itemsArr.push(mergedRes);
+        localStorage.setItem('cart-items', JSON.stringify(itemsArr))
+        itemsArr.forEach((tile) => {
+            const liEl = document.createElement('li');
+            liEl.textContent = tile.itemName;
+            cartList.appendChild(liEl);
+        })
+    }
+    cancelPreview();
+}
+
+
 domReady(function () {
     function onScanSuccess(decodeText, decodeResult) {
         //alert(`QR: ${decodeText}`)

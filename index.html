@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiseBuyers Payee</title>
+    <title>Payee | Super stores, super profits</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="./styles/style.css">
 </head>
@@ -25,35 +25,41 @@
         <!-- Cart sidebar-->
         <div class="w3-sidebar w3-bar-block w3-animate-right" style="display: none;right: 0;width: 300px;"
             id="mySidebar">
-            <button class="w3-bar-item w3-button w3-margin-bottom" onclick="w3_close()">Close &times;</button>
+            <button class="w3-bar-item w3-button w3-margin-top" onclick="w3_close()">Close &times;</button>
             <h1 class="w3-margin">Your cart</h1>
             <!-- <a href="#" class="w3-bar-item w3-button w3-border-bottom">Link 1</a>
             <a href="#" class="w3-bar-item w3-button">Link 2</a>
             <a href="#" class="w3-bar-item w3-button">Link 3</a> -->
             <div id="empty-cart" class="w3-margin"
                 style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 6px;">
+                <img src="./assets/images/lite-logo.jpg" alt="item thumbnail" class="w3-round"
+                    style="width: 100%; height: 200px;">
                 <span style="color: rosybrown; font-size: larger;">It looks like you've not added anything here.</span>
                 <br />
                 <span style="color: rosybrown; font-size: larger;">Scan some items, and add them to your cart.</span>
+
             </div>
             <div id="full-cart">
-                <div class="w3-border"
+                <!-- <div class="w3-border"
                     style="display: flex; flex-direction: row; justify-content: space-around; padding: 6px; height: 76px; width: 100%;">
                     <img src="./assets/images/lite-logo.jpg" alt="item thumbnail" class="w3-round w3-border w3-cell"
                         style="width: 60px; height: 64px;">
                     <div style="display: flex; flex-direction: column; padding: 4px;">
-                        <span>Item name</span>
-                        <span>Item price</span>
+                        <span id="item-name"></span>
+                        <span id="item-price"></span>
                     </div>
                     <div style="display: flex; flex-direction: column; padding: 4px;">
                         <span style="font-weight: bold;">Total</span>
-                        <span style="font-weight: bold;">400</span>
+                        <span style="font-weight: bold;" id="item-total"></span>
                     </div>
 
-                    <button class="w3-button">&#x1F5D1;</button>
-                </div>
+                    <button class="w3-button" id="delete-item">&#x1F5D1;</button>
+                </div> -->
+                <ul id="cart-list" class="w3-ul w3-card-3"></ul>
+
                 <div>
-                    <button class="w3-btn w3-round-xxlarge w3-teal w3-display-middle w3-margin">Pay with
+                    <button class="w3-btn w3-round-xxlarge w3-teal w3-display-middle w3-margin"
+                        onclick="checkoutFunc()">Pay with
                         PayStack</button>
                 </div>
             </div>
@@ -78,11 +84,35 @@
         <p>Please, enable JavaScript on this browser.</p>
     </noscript>
     <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="scripts/scanner.js"></script>
     <!-- <script src="scripts/decodeExtractor.js"></script> -->
     <script src="scripts/generateRandomString.js"></script>
     <!-- <script src="scripts/previewFormatter.js"></script> -->
     <script src="scripts/sidebar-toggle.js"></script>
+    <script>
+        const checkoutTotal = // get from localstorage,
+            function payWithPaystack() {
+                let handler = PaystackPop.setup({
+                    key: '',
+                    email: 'client@gmail.com',
+                    amount: checkoutTotal,
+                    callback: function (response) {
+                        alert('Successful transfer..')
+                    },
+                    onClose: function () {
+                        alert('Done!')
+                    }
+                });
+                //  handler.openIframe();
+            }
+
+        function checkoutFunc() {
+            //  payWithPaystack();
+            localStorage.removeItem('cart-items')
+            w3_close();
+        }
+    </script>
 </body>
 
 </html>
