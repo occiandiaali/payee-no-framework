@@ -23,10 +23,11 @@
             </div>
         </div>
         <!-- Cart sidebar-->
-        <div class="w3-sidebar w3-bar-block w3-animate-right" style="display: none;right: 0;width: 300px;"
+        <div class="w3-sidebar w3-bar-block w3-animate-right" style="display: none;right: 0;width: 360px;"
             id="mySidebar">
             <button class="w3-bar-item w3-button w3-margin-top" onclick="w3_close()">Close &times;</button>
-            <h1 class="w3-margin">Your cart</h1>
+            <h2 class="w3-margin">&#x1f6d2; Cart</h2>
+
             <!-- <a href="#" class="w3-bar-item w3-button w3-border-bottom">Link 1</a>
             <a href="#" class="w3-bar-item w3-button">Link 2</a>
             <a href="#" class="w3-bar-item w3-button">Link 3</a> -->
@@ -40,25 +41,20 @@
 
             </div>
             <div id="full-cart">
-                <!-- <div class="w3-border"
-                    style="display: flex; flex-direction: row; justify-content: space-around; padding: 6px; height: 76px; width: 100%;">
-                    <img src="./assets/images/lite-logo.jpg" alt="item thumbnail" class="w3-round w3-border w3-cell"
-                        style="width: 60px; height: 64px;">
-                    <div style="display: flex; flex-direction: column; padding: 4px;">
-                        <span id="item-name"></span>
-                        <span id="item-price"></span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; padding: 4px;">
-                        <span style="font-weight: bold;">Total</span>
-                        <span style="font-weight: bold;" id="item-total"></span>
-                    </div>
+                <div class="w3-align-center w3-margin">
+                    <input id="userMail" type="email" placeholder="your email address"
+                        class="w3-margin-top w3-round-xxlarge w3-padding w3-border-green"><span
+                        style="font-size: 32px;">&#8592;</span>
+                    <p>We require your email to complete payment.</p>
+                </div>
 
-                    <button class="w3-button" id="delete-item">&#x1F5D1;</button>
-                </div> -->
-                <ul id="cart-list" class="w3-ul w3-card-3"></ul>
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; ">
+                    <ul id="cartUl" class="w3-ul w3-card-4" style="width: 100%;padding: 14px;"></ul>
+                </div>
 
                 <div>
-                    <button class="w3-btn w3-round-xxlarge w3-teal w3-display-middle w3-margin"
+                    <h3>Total: 100</h3>
+                    <button disabled id="paystackBtn" class="w3-btn w3-round-xxlarge w3-teal w3-margin"
                         onclick="checkoutFunc()">Pay with
                         PayStack</button>
                 </div>
@@ -91,6 +87,63 @@
     <!-- <script src="scripts/previewFormatter.js"></script> -->
     <script src="scripts/sidebar-toggle.js"></script>
     <script>
+        const emailVal = document.getElementById('userMail');
+        const paystackBtn = document.getElementById('paystackBtn');
+
+        emailVal.addEventListener('input', () => {
+            if (emailVal.value.length > 5) {
+                paystackBtn.disabled = false;
+            } else {
+                paystackBtn.disabled = true;
+            }
+        })
+
+        // ${img.innerHTML = `<img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:85px">`}
+        // <span onclick="this.parentElement.style.display='none'">×</span>
+
+        function createCartListItem(item) {
+            let li = document.createElement('li');
+            let span = document.createElement('span');
+            let img = document.createElement('img');
+            let div = document.createElement('div');
+            let section = document.createElement('section')
+
+            li.classList.add('w3-bar');
+            span.classList.add('w3-bar-item', 'w3-button', 'w3-white', 'w3-xlarge', 'w3-right');
+            span.onclick = `"this.parentElement.style.display='none'"`;
+            img.style.width = '85px';
+            img.classList.add('w3-bar-item', 'w3-round', 'w3-hide-small');
+            div.classList.add("w3-bar-item");
+
+            li.innerHTML = `
+            ${span.innerText = `×`}
+            ${img.innerHTML = `<img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:75px">`}
+            ${div.innerHTML = `
+                ${span.innerText = item.itemName}
+                ${span.innerText = item.itemPrice}
+            `}
+            ${div.innerHTML = `
+                ${item.itemSum}
+                `}
+    `;
+            return li;
+        }
+        window.onload = function cartFunc() {
+            const cartList = document.getElementById('cartUl')
+            const s = localStorage.getItem('cart-items');
+            if (s !== null) {
+                const pStr = JSON.parse(s);
+                console.log('pStr===', pStr);
+                let fragList = document.createDocumentFragment();
+                pStr.forEach(function (item) {
+                    fragList.appendChild(createCartListItem(item));
+                });
+                cartList.appendChild(fragList)
+            } else {
+                console.log('Cart storage is empty!')
+            }
+        }
+
         const checkoutTotal = // get from localstorage,
             function payWithPaystack() {
                 let handler = PaystackPop.setup({
@@ -111,6 +164,7 @@
             //  payWithPaystack();
             localStorage.removeItem('cart-items')
             w3_close();
+            window.location.reload();
         }
     </script>
 </body>

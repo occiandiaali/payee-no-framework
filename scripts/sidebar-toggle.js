@@ -1,9 +1,7 @@
 const cartPlaceholder = document.getElementById('empty-cart');
 const cart = document.getElementById('full-cart');
-let cartStr = "";
+
 let str = localStorage.getItem('cart-items');
-cartStr = str;
-//const cartItems = JSON.parse(cartStr);
 
 function w3_open() {
     document.getElementById("mySidebar").style.display = "block";
@@ -12,6 +10,7 @@ function w3_open() {
     } else {
         cartPlaceholder.style.display = 'none';
     }
+
 }
 
 function w3_close() {
