@@ -46,13 +46,16 @@ function previewModal(name, info, price) {
 </div>
 <!--<div class="w3-margin" style="display: flex; flex-direction: row; justify-content: space-between; padding: 6px;"> -->
 <button class="w3-btn w3-round-xxlarge w3-yellow" onclick="cancelPreview()">Cancel</button>
-<button class="w3-btn w3-round-xxlarge w3-teal" onclick="addToCart()">Add to cart</button>
+<button class="w3-btn w3-round-xxlarge w3-teal" onclick="addItemToCart()">Add to cart</button>
 <!-- </div> -->
 </section>
     `;
     document.getElementById('preview').innerHTML += previewHtml;
-
+    let selectEl = document.querySelector('#item-qty');
+    globalQty = selectEl.options[selectEl.selectedIndex].value;
 }
+
+
 
 
 function domReady(fn) {
@@ -107,6 +110,34 @@ function createCartList(cItem) {
      `;
 
     return li;
+}
+
+function addItemToCart() {
+    const storedStr = localStorage.getItem('cart-items');
+    if (storedStr === null) {
+        const tempCart = [];
+        const cartItem = {
+            itemName: globalName.trim(),
+            itemPrice: globalPrice.trim(),
+            itemSum: +globalPrice * +globalQty
+        };
+        tempCart.unshift(cartItem);
+        console.log(`cart from null: ${tempCart}`)
+        localStorage.setItem('cart-items', JSON.stringify(tempCart));
+        cancelPreview();
+    } else {
+        let parsedStr = JSON.parse(storedStr);
+        const cartItem = {
+            itemName: globalName.trim(),
+            itemPrice: globalPrice.trim(),
+            itemSum: +globalPrice * +globalQty
+        };
+        parsedStr.unshift(cartItem);
+
+        console.log(`cart from store: ${parsedStr}`)
+        localStorage.setItem('cart-items', JSON.stringify(parsedStr));
+        cancelPreview();
+    }
 }
 
 function addToCart() {
