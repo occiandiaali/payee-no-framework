@@ -46,6 +46,7 @@
                         class="w3-margin-top w3-round-xxlarge w3-padding w3-border-green"><span
                         style="font-size: 32px;">&#8592;</span>
                     <p>We require your email to complete payment.</p>
+                    <span style="color: lightslategrey;">Receipt will be emailed to you.</span>
                 </div>
 
                 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; ">
@@ -54,6 +55,8 @@
 
                 <div>
                     <h3>Total: 100</h3>
+                    <button class="w3-btn w3-round-xxlarge w3-yellow w3-margin" id="clearCartBtn"
+                        onclick="clearCart()">Clear cart</button>
                     <button disabled id="paystackBtn" class="w3-btn w3-round-xxlarge w3-teal w3-margin"
                         onclick="checkoutFunc()">Pay with
                         PayStack</button>
@@ -107,24 +110,24 @@
             let img = document.createElement('img');
             let div = document.createElement('div');
             let section = document.createElement('section')
+            let br = document.createElement('br');
 
-            li.classList.add('w3-bar');
-            span.classList.add('w3-bar-item', 'w3-button', 'w3-white', 'w3-xlarge', 'w3-right');
+            li.classList.add('w3-bar', 'w3-row');
+            span.classList.add('w3-bar-item', 'w3-button', 'w3-white', 'w3-xlarge', 'w3-right', 'w3-col');
             span.onclick = `"this.parentElement.style.display='none'"`;
-            img.style.width = '85px';
-            img.classList.add('w3-bar-item', 'w3-round', 'w3-hide-small');
-            div.classList.add("w3-bar-item");
+
+            img.classList.add('w3-bar-item', 'w3-round', 'w3-col', 'w3-s3', 'w3-hide-small');
+            div.classList.add("w3-bar-item", 'w3-margin-top');
 
             li.innerHTML = `
-            ${span.innerText = `×`}
-            ${img.innerHTML = `<img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:75px">`}
+            ${img.innerHTML = `<img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:85px;float:left;padding-right:8px">`}
             ${div.innerHTML = `
                 ${span.innerText = item.itemName}
-                ${span.innerText = item.itemPrice}
-            `}
-            ${div.innerHTML = `
-                ${item.itemSum}
                 `}
+                ${div.innerHTML = `
+                   Amt: ${item.itemSum}
+                    `}
+                    ${span.innerText = `×`}
     `;
             return li;
         }
@@ -142,6 +145,11 @@
             } else {
                 console.log('Cart storage is empty!')
             }
+        }
+
+        function clearCart() {
+            localStorage.removeItem('cart-items');
+            window.location.reload();
         }
 
         const checkoutTotal = // get from localstorage,
