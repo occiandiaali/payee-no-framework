@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payee | Super stores, super profits</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/fonts/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/fonts/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/fonts/favicon-16x16.png">
+    <link rel="icon" href="/assets/fonts/favicon.ico">
+    <link rel="manifest" href="/assets/fonts/site.webmanifest">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="./styles/style.css">
 </head>
@@ -54,11 +59,14 @@
                 </div>
 
                 <div>
-                    <h3>Total: 100</h3>
+                    <div class="w3-margin w3-padding">
+                        <span style="color: lightslategray;">Taxes: 0.00</span>
+                        <h3 style="font-weight: bold;">Total: <span id="cart-total-span"></span> NGN</h3>
+                    </div>
                     <button class="w3-btn w3-round-xxlarge w3-yellow w3-margin" id="clearCartBtn"
                         onclick="clearCart()">Clear cart</button>
                     <button disabled id="paystackBtn" class="w3-btn w3-round-xxlarge w3-teal w3-margin"
-                        onclick="checkoutFunc()">Pay with
+                        onclick="payWithPaystack()">Pay with
                         PayStack</button>
                 </div>
             </div>
@@ -89,9 +97,11 @@
     <script src="scripts/generateRandomString.js"></script>
     <!-- <script src="scripts/previewFormatter.js"></script> -->
     <script src="scripts/sidebar-toggle.js"></script>
+
     <script>
         const emailVal = document.getElementById('userMail');
         const paystackBtn = document.getElementById('paystackBtn');
+        const cartTotalDisplay = document.getElementById('cart-total-span');
 
         emailVal.addEventListener('input', () => {
             if (emailVal.value.length > 5) {
@@ -114,7 +124,11 @@
 
             li.classList.add('w3-bar', 'w3-row');
             span.classList.add('w3-bar-item', 'w3-button', 'w3-white', 'w3-xlarge', 'w3-right', 'w3-col');
-            span.onclick = `"this.parentElement.style.display='none'"`;
+            // span.onclick = function () {
+            //     console.log('Deleting item..');
+            //     removeCartItem(item.Id, item.itemSum);
+
+            // } `"this.parentElement.style.display='none'"`;
 
             img.classList.add('w3-bar-item', 'w3-round', 'w3-col', 'w3-s3', 'w3-hide-small');
             div.classList.add("w3-bar-item", 'w3-margin-top');
@@ -125,22 +139,25 @@
                 ${span.innerText = item.itemName}
                 `}
                 ${div.innerHTML = `
-                   Amt: ${item.itemSum}
+                   ${item.itemSum} NGN
                     `}
-                    ${span.innerText = `×`}
     `;
+
             return li;
         }
         window.onload = function cartFunc() {
             const cartList = document.getElementById('cartUl')
             const s = localStorage.getItem('cart-items');
+            const t = localStorage.getItem('cart-sum');
             if (s !== null) {
                 const pStr = JSON.parse(s);
+                const tStr = JSON.parse(t);
                 console.log('pStr===', pStr);
                 let fragList = document.createDocumentFragment();
                 pStr.forEach(function (item) {
                     fragList.appendChild(createCartListItem(item));
                 });
+                cartTotalDisplay.innerText = tStr;
                 cartList.appendChild(fragList)
             } else {
                 console.log('Cart storage is empty!')
@@ -149,30 +166,37 @@
 
         function clearCart() {
             localStorage.removeItem('cart-items');
+            localStorage.removeItem('cart-sum');
             window.location.reload();
         }
 
-        const checkoutTotal = // get from localstorage,
-            function payWithPaystack() {
-                let handler = PaystackPop.setup({
-                    key: '',
-                    email: 'client@gmail.com',
-                    amount: checkoutTotal,
-                    callback: function (response) {
-                        alert('Successful transfer..')
-                    },
-                    onClose: function () {
-                        alert('Done!')
-                    }
-                });
-                //  handler.openIframe();
-            }
+
+        function payWithPaystack() {
+            const totalStr = localStorage.getItem('cart-sum');
+            const total = JSON.parse(totalStr);
+            console.log(`Pay: ${total * 100}`);
+            let handler = PaystackPop.setup({
+                key: 'pk_test_b0d0cb50a1b039f53f0b3564d02cebcf0a19c37b',
+                email: emailVal.value,
+                amount: (total * 100),
+                callback: function (response) {
+                    //  alert('Successful transaction..')
+                    clearCart();
+                    w3_close()
+                },
+                onClose: function () {
+                    //   alert('Done!')
+                    console.log('Done====&')
+                }
+            });
+            handler.openIframe();
+        }
 
         function checkoutFunc() {
-            //  payWithPaystack();
-            localStorage.removeItem('cart-items')
-            w3_close();
-            window.location.reload();
+            payWithPaystack();
+
+
+            //  window.location.reload();
         }
     </script>
 </body>

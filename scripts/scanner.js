@@ -74,30 +74,43 @@ function cancelPreview() {
 
 function addItemToCart() {
     const selectEl = document.getElementById('item-qty');
-    globalQty = selectEl.options[selectEl.selectedIndex].value;
+    globalQty = selectEl.options[selectEl.selectedIndex].value || "1";
     const storedStr = localStorage.getItem('cart-items');
+
     if (storedStr === null) {
         const tempCart = [];
+        let tempCartSum = 0.0;
         const cartItem = {
+            itemId: window.crypto.randomUUID(),
             itemName: globalName.trim(),
             itemPrice: globalPrice.trim(),
             itemSum: (+globalPrice * +globalQty)
         };
         tempCart.unshift(cartItem);
+
+        tempCartSum += (+globalPrice * +globalQty);
         console.log(`cart from null: ${JSON.stringify(tempCart)}`)
+        console.log(`cart sum from null: ${tempCartSum}`)
         localStorage.setItem('cart-items', JSON.stringify(tempCart));
+        localStorage.setItem('cart-sum', JSON.stringify(tempCartSum));
         cancelPreview();
     } else {
+        const storedCartSumStr = localStorage.getItem('cart-sum');
         let parsedStr = JSON.parse(storedStr);
+        let parsedCartSum = JSON.parse(storedCartSumStr)
         const cartItem = {
+            itemId: window.crypto.randomUUID(),
             itemName: globalName.trim(),
             itemPrice: globalPrice.trim(),
             itemSum: (+globalPrice * +globalQty)
         };
         parsedStr.unshift(cartItem);
 
+        parsedCartSum += (+globalPrice * +globalQty);
         console.log(`cart from store: ${JSON.stringify(parsedStr)}`)
+        console.log(`cart sum from store: ${parsedCartSum}`)
         localStorage.setItem('cart-items', JSON.stringify(parsedStr));
+        localStorage.setItem('cart-sum', JSON.stringify(parsedCartSum));
         cancelPreview();
     }
 }
