@@ -12,6 +12,42 @@
     <link rel="manifest" href="/assets/fonts/site.webmanifest">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="./styles/style.css">
+    <style>
+        #chatbot {
+            font-size: 32px;
+            position: fixed;
+            bottom: 20px;
+            right: 10%;
+        }
+
+        #chatbot-div {
+            width: 40px;
+            height: 40px;
+            position: fixed;
+            bottom: 19px;
+            right: 10%;
+            padding: 8px;
+            border-radius: 100%;
+            background-color: coral;
+            animation-name: bot;
+            animation-duration: 4s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes bot {
+            0% {
+                background-color: coral;
+            }
+
+            50% {
+                background-color: rgb(87, 67, 60);
+            }
+
+            100% {
+                background-color: coral;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -74,7 +110,7 @@
         <!--Navbar-->
         <div class="w3-bar w3-border w3-white">
             <img src="./assets/images/lite-logo.jpg" alt="payee" class="w3-bar-item"
-                style="height: 60px; width: 120px;">
+                style="height: 62px; width: 124px;">
             <!-- <a href="#" class="w3-bar-item w3-button">WiseBuyers Payee</a> -->
             <!-- <a href="#" class="w3-bar-item w3-button w3-right"></a> -->
             <button class="w3-button w3-xlarge w3-right" onclick="w3_open()">&#x1f6d2;</button>
@@ -84,6 +120,12 @@
             <section class="scan-screen">
                 <div id="app-qr-reader"></div>
             </section>
+        </div>
+        <div id="chatbot-div" class="w3-tooltip">
+            <span id="chatbot">&#129302;</span>
+            <span style="position:absolute;right:10%;bottom:24px;width:150px;height: 150px;"
+                class="w3-text w3-tag">ChatBot
+                chat-box here..</span>
         </div>
     </main>
     <noscript>
