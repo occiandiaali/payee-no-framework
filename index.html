@@ -47,6 +47,18 @@
                 background-color: coral;
             }
         }
+
+        .cartItemDiv {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: auto;
+            justify-content: space-around;
+            padding: 6px;
+            background-color: rgb(247, 224, 216);
+            border-radius: 12px;
+            margin-bottom: 6px;
+        }
     </style>
 </head>
 
@@ -123,7 +135,7 @@
         </div>
         <div id="chatbot-div" class="w3-tooltip">
             <span id="chatbot">&#129302;</span>
-            <span style="position:absolute;right:10%;bottom:24px;width:150px;height: 150px;"
+            <span style="position:absolute;right:6%;bottom:28px;width:200px;height: 250px;"
                 class="w3-text w3-tag">ChatBot
                 chat-box here..</span>
         </div>
@@ -156,37 +168,40 @@
         // ${img.innerHTML = `<img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:85px">`}
         // <span onclick="this.parentElement.style.display='none'">×</span>
 
-        function createCartListItem(item) {
-            let li = document.createElement('li');
-            let span = document.createElement('span');
-            let img = document.createElement('img');
-            let div = document.createElement('div');
-            let section = document.createElement('section')
-            let br = document.createElement('br');
-
-            li.classList.add('w3-bar', 'w3-row');
-            span.classList.add('w3-bar-item', 'w3-button', 'w3-white', 'w3-xlarge', 'w3-right', 'w3-col');
-            // span.onclick = function () {
-            //     console.log('Deleting item..');
-            //     removeCartItem(item.Id, item.itemSum);
-
-            // } `"this.parentElement.style.display='none'"`;
-
-            img.classList.add('w3-bar-item', 'w3-round', 'w3-col', 'w3-s3', 'w3-hide-small');
-            div.classList.add("w3-bar-item", 'w3-margin-top');
-
-            li.innerHTML = `
-            ${img.innerHTML = `<img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:85px;float:left;padding-right:8px">`}
-            ${div.innerHTML = `
-                ${span.innerText = item.itemName}
-                `}
-                ${div.innerHTML = `
-                   ${item.itemSum} NGN
-                    `}
-    `;
-
-            return li;
+        function deleteItem() {
+            // console.log("Delete ID: ")
+            alert('This action is pending. Cannot delete single cart item.')
         }
+
+        function createCartListDiv(item) {
+            let divCont = document.createElement('div');
+            divCont.className = "cartItemDiv";
+            let infoDiv = document.createElement('div');
+
+            let deleteDiv = document.createElement('div');
+            deleteDiv.className = "deleteDiv";
+            let img = document.createElement('img');
+            img.classList.add("itemThumb")
+            let h3 = document.createElement('h3');
+
+            let p = document.createElement('p');
+
+
+            divCont.innerHTML = `
+            <img src="./assets/images/lite-logo.jpg" alt="item thumbnail" style="width:85px;float:left;border-radius:12px; padding-right:12px">
+            ${infoDiv.innerHTML = `
+                ${h3.innerText = item.itemName}
+        
+                ${p.innerText = item.itemSum} NGN
+                `}
+            
+               <span style="font-size:16px;margin-top:8%;margin-left:3%" onclick="deleteItem()">&#128465</span>
+              
+            `;
+            return divCont;
+        }
+
+
         window.onload = function cartFunc() {
             const cartList = document.getElementById('cartUl')
             const s = localStorage.getItem('cart-items');
@@ -197,9 +212,10 @@
                 console.log('pStr===', pStr);
                 let fragList = document.createDocumentFragment();
                 pStr.forEach(function (item) {
-                    fragList.appendChild(createCartListItem(item));
+
+                    fragList.appendChild(createCartListDiv(item));
                 });
-                cartTotalDisplay.innerText = tStr;
+                cartTotalDisplay.innerText = tStr ? tStr : '0:00';
                 cartList.appendChild(fragList)
             } else {
                 console.log('Cart storage is empty!')
